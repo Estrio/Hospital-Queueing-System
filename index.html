@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Queue Display</title>
-  <link rel="stylesheet" href="index.css">
+  <title>Guard Panel</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <h1><img src="./assets/TWIN CARE HOSPITAL.png" alt=""> Twin Care Hospital Incorporated</h1>
-  <div id="display"></div>
+  <!-- HEADER -->
+  <div class="header">
+    <img src="./assets/TWIN CARE HOSPITAL.png" alt="Twin Care Hospital Logo" class="logo">
+    <h1>Twin Care Hospital Incorporated</h1>
+  </div>
 
-<script type="module" src="./js/index.js"></script>
+  <!-- MAIN -->
+  <div class="container">
+          <!-- TICKET DISPLAY -->
+    <div class="ticket-box">
+      <div class="label">LAST GENERATED TICKET</div>
+      <div id="ticket">---</div>
+    </div>
+
+  <div class="cards" id="doctorCards"></div>
+  </div>
+
+  <!-- PATIENT MODAL -->
+<!-- PATIENT MODAL -->
+<div class="modal" id="patientModal">
+
+  <div class="modal-content">
+
+    <span class="close" id="closeModal">&times;</span>
+
+    <div class="modal-icon">
+      🎫
+    </div>
+
+    <h2>Generate Queue Ticket</h2>
+
+    <div class="modal-sub">
+      Enter patient name before printing the queue ticket.
+    </div>
+
+    <input
+      type="text"
+      id="patientName"
+      placeholder="Patient Full Name"
+    >
+
+    <button id="confirmTicketBtn">
+      Generate & Print Ticket
+    </button>
+
+  </div>
+
+</div>
+
+  <script type="module" src="./js/index.js"></script>
+
 </body>
-</html> 
+</html>

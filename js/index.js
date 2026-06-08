@@ -1,70 +1,101 @@
 import {
   collection,
   onSnapshot
-}
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { db }
-from "./firebase.js";
+import { db } from "./firebase.js";
 
 import {
-  renderDoctors
-}
-from "./render.js";
+  renderDoctors,
+  updateLastTicket
+} from "./ui.js";
 
 import {
-  getCurrentPageDoctors
-}
-from "./pagination.js";
+  openPatientModal,
+  closePatientModal,
+  getPatientName,
+  getSelectedDoctor
+} from "./modal.js";
 
-import {
-  handleAnnouncements
-}
-from "./announcements.js";
+import { createTicket } from "./ticket.js";
 
-let doctorsCache = [];
+import { printTicket } from "./printer.js";
 
-window.addEventListener(
-  "audio-ready",
-
-  () => {
-
-    handleAnnouncements(
-      doctorsCache
-    );
-  }
-);
-
+// =========================
+// LOAD DOCTORS
+// =========================
 onSnapshot(
   collection(db, "doctors"),
-
   (snapshot) => {
 
-    doctorsCache =
-      snapshot.docs;
+    const doctors = snapshot.docs.map(docSnap => {
 
-    handleAnnouncements(
-      snapshot.docs
-    );
+      const data = docSnap.data();
+
+      return {
+        code: docSnap.id,
+        name: data.name || docSnap.id,
+        specialty: data.specialty || "Doctor"
+      };
+    });
 
     renderDoctors(
-      getCurrentPageDoctors(
-        doctorsCache
-      )
+      doctors,
+      openPatientModal
     );
   }
 );
 
-setInterval(() => {
+// =========================
+// MODAL EVENTS
+// =========================
+document
+  .getElementById("closeModal")
+  .onclick = closePatientModal;
 
-  if (!doctorsCache.length)
-    return;
+window.onclick = (e) => {
 
-  renderDoctors(
+  const modal =
+    document.getElementById("patientModal");
 
-    getCurrentPageDoctors(
-      doctorsCache
-    )
-  );
+  if (e.target === modal) {
+    closePatientModal();
+  }
+};
 
-}, 10000);
+// =========================
+// CONFIRM TICKET
+// =========================
+document
+  .getElementById("confirmTicketBtn")
+  .onclick = async () => {
+
+    const patientName =
+      getPatientName();
+
+    if (!patientName) {
+
+      alert("Please enter patient name");
+
+      return;
+    }
+
+    const code =
+      getSelectedDoctor();
+
+    const result =
+      await createTicket(
+        code,
+        patientName
+      );
+
+    updateLastTicket(result.ticket);
+
+    printTicket({
+      ticket: result.ticket,
+      patientName,
+      room: result.room
+    });
+
+    closePatientModal();
+};
