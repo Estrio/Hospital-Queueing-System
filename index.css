@@ -14,41 +14,41 @@ body {
 }
 
 * {
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 /* HEADER */
+/* FIX #11: reduced header height so cards get more vertical space on kiosk */
 h1 {
   display: flex;
 
   justify-content: center;
   align-items: center;
 
-  gap: 20px;
+  gap: 14px;
 
-  padding: 20px;
+  padding: 10px 20px;       /* was 20px */
 
-  font-size: 50px;
+  font-size: 32px;          /* was 50px */
   font-weight: bold;
 
   background: #ffffff;
 
   margin: 0;
 
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 
   flex-shrink: 0;
 }
 
 h1 img {
-  height: 100px;
-
+  height: 56px;             /* was 100px */
   width: auto;
-
   object-fit: contain;
 }
 
 /* DISPLAY GRID */
+/* FIX #10: use auto-fill so grid adapts if ITEMS_PER_PAGE changes */
 #display {
   flex: 1;
 
@@ -89,36 +89,31 @@ h1 img {
 
 /* DOCTOR NAME */
 .doctor-name {
-  font-size: clamp(24px, 2vw, 36px);
+  font-size: clamp(20px, 2vw, 34px);  /* slightly reduced for more room */
   font-weight: bold;
-
   margin: 0;
 }
 
 /* LABEL */
 .label {
-  font-size: 20px;
+  font-size: 18px;
   opacity: 0.8;
-
   margin: 0;
 }
 
-/* NOW SERVING (BIG BIG) */
+/* NOW SERVING */
 .now {
   font-size: clamp(48px, 5vw, 90px);
   font-weight: bold;
-
   color: #1fac13;
-
   margin: 0;
   line-height: 1;
 }
 
 /* NEXT */
 .next {
-  font-size: clamp(18px, 1.8vw, 32px);
+  font-size: clamp(16px, 1.8vw, 30px);
   color: #000000;
-
   margin: 0;
 }
 
@@ -127,7 +122,6 @@ h1 img {
   display: flex;
   justify-content: center;
   gap: 10px;
-
   overflow: hidden;
 }
 
@@ -140,57 +134,41 @@ h1 img {
 }
 
 .room {
-  font-size: clamp(16px, 1.5vw, 24px);
-
+  font-size: clamp(14px, 1.5vw, 22px);
   font-weight: bold;
-
   color: #000000;
-
   margin-top: -5px;
 }
 
 .missed-section {
-  margin-top: 10px;
-
+  margin-top: 6px;
   width: 100%;
 }
 
 .missed-label {
-  font-size: 20px;
-
+  font-size: 18px;
   font-weight: bold;
-
   color: #ff6b6b;
-
   margin-bottom: 6px;
 }
 
 .missed-list {
   display: flex;
-
   justify-content: center;
-
   gap: 6px;
-
   flex-wrap: wrap;
 }
 
 .missed-pill {
   background: #dc3545;
-
   color: white;
-
   padding: 5px 10px;
-
   border-radius: 20px;
-
   font-size: 16px;
-
   font-weight: bold;
 }
 
 .missed-empty {
   opacity: 0.5;
-
   font-size: 12px;
 }

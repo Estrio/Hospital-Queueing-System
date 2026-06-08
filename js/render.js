@@ -3,40 +3,33 @@ const display =
 
 export function renderDoctors(doctors) {
 
-  display.innerHTML = "";
+  // FIX #4: build full HTML string first, then set innerHTML once
+  // instead of += in a loop (which re-parses the DOM on every iteration)
+  const html = doctors.map(docSnap => {
 
-  doctors.forEach(docSnap => {
+    const data = docSnap.data();
 
-    const data =
-      docSnap.data();
+    const name    = data.name;
+    const current = data.current || "---";
+    const room    = data.room || "---";
 
-    const name =
-      data.name;
+    const nextPatient = data.queue?.[0] || null;
+    const next = nextPatient ? nextPatient.ticket : "---";
 
-    const current =
-      data.current || " ";
+    const rest = (data.queue || [])
+      .slice(1, 5)
+      .map(x => x.ticket);
 
-    const room =
-      data.room || "---";
+    const allMissed  = data.missed || [];
+    const missed     = allMissed.slice(-3);
 
-    const nextPatient =
-      data.queue?.[0] || null;
+    // FIX #7: show total missed count if more than 3 are hidden
+    const missedLabel =
+      allMissed.length > 3
+        ? `MISSED (${allMissed.length})`
+        : "MISSED";
 
-    const next =
-      nextPatient
-        ? nextPatient.ticket
-        : "---";
-
-    const rest =
-      (data.queue || [])
-        .slice(1, 5)
-        .map(x => x.ticket);
-
-    const missed =
-      data.missed?.slice(-3) || [];
-
-    display.innerHTML += `
-
+    return `
       <div class="card">
 
         <div class="doctor-name">
@@ -60,50 +53,37 @@ export function renderDoctors(doctors) {
         </div>
 
         <div class="queue-list">
-
           ${
             rest.length
-
               ? rest.map(ticket => `
-                  <div class="pill">
-                    ${ticket}
-                  </div>
+                  <div class="pill">${ticket}</div>
                 `).join("")
-
               : ""
           }
-
         </div>
 
         <div class="missed-section">
 
           <div class="missed-label">
-            MISSED
+            ${missedLabel}
           </div>
 
           <div class="missed-list">
-
             ${
               missed.length
-
                 ? missed.map(m => `
-                    <div class="missed-pill">
-                      ${m.ticket}
-                    </div>
+                    <div class="missed-pill">${m.ticket}</div>
                   `).join("")
-
-                : `
-                    <div class="missed-empty">
-                      NONE
-                    </div>
-                  `
+                : `<div class="missed-empty">NONE</div>`
             }
-
           </div>
 
         </div>
 
       </div>
     `;
-  });
+
+  }).join("");
+
+  display.innerHTML = html;
 }
