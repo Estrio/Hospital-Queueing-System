@@ -1,5 +1,5 @@
 {
-  "name": "control_panel",
+  "name": "guard_panel",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -12,6 +12,10 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
     "electron": "^42.0.0"
+  },
+  "dependencies": {
+    "electron-pos-printer": "^1.4.0"
   }
 }

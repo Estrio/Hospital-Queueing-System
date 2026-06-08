@@ -1,145 +1,101 @@
 import {
   collection,
   onSnapshot
-}
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { db }
-from "./firebase.js";
+import { db } from "./firebase.js";
 
 import {
-  renderDoctors
-}
-from "./ui.js";
+  renderDoctors,
+  updateLastTicket
+} from "./ui.js";
 
 import {
-  addDoctor,
-  removeDoctor
-}
-from "./doctors.js";
+  openPatientModal,
+  closePatientModal,
+  getPatientName,
+  getSelectedDoctor
+} from "./modal.js";
 
-import {
-  nextPatient
-}
-from "./queue.js";
+import { createTicket } from "./ticket.js";
 
-import {
-  recallPatient,
-  patientArrived
-}
-from "./recall.js";
+import { printTicket } from "./printer.js";
 
-import {
-  restorePatient
-}
-from "./restore.js";
-
-import {
-  openModal,
-  closeModal
-}
-from "./modals.js";
-
-import {
-  openRestoreModal
-}
-from "./restoreModal.js";
-
-const container =
-  document.getElementById(
-    "doctorContainer"
-  );
-
+// =========================
+// LOAD DOCTORS
+// =========================
 onSnapshot(
-
   collection(db, "doctors"),
-
   (snapshot) => {
 
-    container.innerHTML =
-      renderDoctors(
-        snapshot.docs
-      );
+    const doctors = snapshot.docs.map(docSnap => {
+
+      const data = docSnap.data();
+
+      return {
+        code: docSnap.id,
+        name: data.name || docSnap.id,
+        specialty: data.specialty || "Doctor"
+      };
+    });
+
+    renderDoctors(
+      doctors,
+      openPatientModal
+    );
   }
 );
 
-container.addEventListener(
-  "click",
-
-  async (e) => {
-
-    const btn =
-      e.target.closest("button");
-
-    if (!btn) return;
-
-    const code =
-      btn.dataset.code;
-
-    const action =
-      btn.dataset.action;
-
-    if (action === "next") {
-      await nextPatient(code);
-    }
-
-    if (action === "delete") {
-      await removeDoctor(code);
-    }
-
-    if (action === "recall") {
-      await recallPatient(code);
-    }
-
-    if (action === "arrived") {
-      await patientArrived(code);
-    }
-
-    if (action === "restore") {
-
-      await openRestoreModal(
-        code
-      );
-    }
-
-      if (action === "queue") {
-
-        alert(
-          "Queue modal not connected yet 😭"
-        );
-      }
-  }
-);
-
+// =========================
+// MODAL EVENTS
+// =========================
 document
-  .getElementById(
-    "saveDoctorBtn"
-  )
-  .onclick = async () => {
+  .getElementById("closeModal")
+  .onclick = closePatientModal;
 
-    await addDoctor();
+window.onclick = (e) => {
 
-    closeModal(
-      "doctorModal"
-    );
-  };
+  const modal =
+    document.getElementById("patientModal");
 
-  document
-  .getElementById(
-    "openModalBtn"
-  )
-  .onclick = () => {
-
-    openModal(
-      "doctorModal"
-    );
+  if (e.target === modal) {
+    closePatientModal();
+  }
 };
 
+// =========================
+// CONFIRM TICKET
+// =========================
 document
-  .querySelector(".close")
-  .onclick = () => {
+  .getElementById("confirmTicketBtn")
+  .onclick = async () => {
 
-    closeModal(
-      "doctorModal"
-    );
+    const patientName =
+      getPatientName();
+
+    if (!patientName) {
+
+      alert("Please enter patient name");
+
+      return;
+    }
+
+    const code =
+      getSelectedDoctor();
+
+    const result =
+      await createTicket(
+        code,
+        patientName
+      );
+
+    updateLastTicket(result.ticket);
+
+    printTicket({
+      ticket: result.ticket,
+      patientName,
+      room: result.room
+    });
+
+    closePatientModal();
 };

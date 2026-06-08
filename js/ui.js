@@ -1,123 +1,50 @@
+export function updateLastTicket(ticket) {
+
+  document.getElementById("ticket")
+    .innerText = ticket;
+}
+
 export function renderDoctors(
-  doctors
+  doctors,
+  onGenerate
 ) {
 
-  return doctors.map(docSnap => {
+  const container =
+    document.getElementById("doctorCards");
 
-    const data =
-      docSnap.data();
+  let html = "";
 
-    const code =
-      docSnap.id;
+  doctors.forEach(({ code, name, specialty }) => {
 
-    return `
+    html += `
+      <div class="card">
 
-      <div class="doctor-card">
-
-        <div class="doctor-name">
-          ${data.name}
+        <div class="doctor">
+          ${name}
         </div>
 
-        <div class="badges">
-
-          <div class="badge specialty-badge">
-            ${data.specialty}
-          </div>
-
+        <div class="sub">
+          ${specialty}
         </div>
 
-        <div class="badge room-badge">
-          ROOM ${data.room || "---"}
-        </div>
-
-        <div class="status">
-
-          <div class="status-label">
-            Current Patient
-          </div>
-
-          <strong>
-            ${data.current || "---"}
-          </strong>
-
-          <div class="current-name">
-            ${data.currentPatientName || ""}
-          </div>
-
-        </div>
-
-        <div class="button-grid">
-
-          <button
-            class="next-btn"
-            data-action="next"
-            data-code="${code}"
-          >
-            ▶ NEXT
-          </button>
-
-          <button
-            class="recall-btn"
-            data-action="recall"
-            data-code="${code}"
-          >
-            🔊 RECALL
-          </button>
-
-          <button
-            class="arrived-btn"
-            data-action="arrived"
-            data-code="${code}"
-          >
-            ✅ ARRIVED
-          </button>
-
-          <button
-            class="delete-btn"
-            data-action="delete"
-            data-code="${code}"
-          >
-            🗑️ DELETE
-          </button>
-
-          <button
-            class="view-btn"
-            data-action="queue"
-            data-code="${code}"
-          >
-            📋 VIEW QUEUE
-          </button>
-
-          ${
-            data.missed?.length
-            ? `
-              <button
-                class="restore-btn"
-                data-action="restore"
-                data-code="${code}"
-              >
-                ♻️ RESTORE
-              </button>
-            `
-            : ""
-          }
-
-        </div>
-
-        <div class="missed-text">
-
-          ${
-            data.missed?.length
-            ? "Missed: " +
-              data.missed
-                .map(m => m.ticket)
-                .join(", ")
-            : ""
-          }
-
-        </div>
+        <button
+          class="btn green"
+          data-code="${code}"
+        >
+          Generate Ticket
+        </button>
 
       </div>
     `;
-  }).join("");
+  });
+
+  container.innerHTML = html;
+
+  document
+    .querySelectorAll(".btn.green")
+    .forEach(btn => {
+
+      btn.onclick = () =>
+        onGenerate(btn.dataset.code);
+    });
 }

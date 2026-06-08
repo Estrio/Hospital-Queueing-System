@@ -1,9 +1,7 @@
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-import {
-  getFirestore
-}
+import { getFirestore }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -23,7 +21,10 @@ const firebaseConfig = {
     "608981748778",
 
   appId:
-    "1:608981748778:web:c9b30352120ee704780753"
+    "1:608981748778:web:c9b30352120ee704780753",
+
+  measurementId:
+    "G-LZV6BG1KT0"
 };
 
 const app =
