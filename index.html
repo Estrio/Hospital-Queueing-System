@@ -1,68 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Doctor Panel</title>
-    <link rel="stylesheet" href="index.css">
+  <title>Queue Display</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-
-   <!-- HEADER -->
-  <div class="header">
-    <img src="./assets/TWIN CARE HOSPITAL.png" alt="Twin Care Hospital Logo" class="logo">
-    <h1 class="header-title">Twin Care Hospital Incorporated</h1>
-  </div>
-
-
-<button id="openModalBtn" class="add-btn">➕ Add Doctor</button>
-
-<div class="container" id="doctorContainer"></div>
-
-<div id="doctorModal" class="modal">
-
-  <div class="modal-content">
-    <span class="close">&times;</span>
-
-    <h2>➕ Add New Doctor</h2>
-
-    <input id="room" placeholder="Room Number">
-    <input id="name" placeholder="Doctor Name">
-    <input id="specialty" placeholder="Specialty">
-    <input id="prefix" placeholder="Prefix (A, B, C...)">
-
-    <button id="saveDoctorBtn">Add Doctor</button>
-  </div>
-
-</div>
-
-<div id="queueModal" class="modal">
-  <div class="modal-content">
-
-    <span class="closeQueue">&times;</span>
-
-    <h2 id="queueTitle">Queue</h2>
-
-    <div id="queueList"></div>
-
-  </div>
-</div>
-
-<div id="restoreModal" class="modal">
-  <div class="modal-content">
-
-    <span class="closeRestore">&times;</span>
-
-    <h2>♻️ Restore Missed Patient</h2>
-
-    <div id="restoreList"></div>
-
-  </div>
-</div>
+  <h1><img src="./assets/TWIN CARE HOSPITAL.png" alt=""> Twin Care Hospital Incorporated</h1>
+  <div id="display"></div>
 
 <script type="module" src="./js/index.js"></script>
-
 </body>
-</html>
-
-
-
+</html> 
