@@ -2,80 +2,49 @@ import {
   doc,
   setDoc,
   deleteDoc
-}
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { db }
-from "./firebase.js";
+import { db } from "./firebase.js";
 
 export async function addDoctor() {
 
-  const name =
-    document.getElementById("name")
-      .value.trim();
+  const room      = document.getElementById("docRoom").value.trim();
+  const name      = document.getElementById("docName").value.trim();
+  const specialty = document.getElementById("docSpecialty").value.trim();
+  const prefix    = document.getElementById("docPrefix").value.trim().toUpperCase();
 
-  const specialty =
-    document.getElementById("specialty")
-      .value.trim();
-
-  const room =
-    document.getElementById("room")
-      .value.trim();
-
-  const prefix =
-    document.getElementById("prefix")
-      .value.trim()
-      .toUpperCase();
-
-  if (
-    !name ||
-    !specialty ||
-    !room ||
-    !prefix
-  ) {
-
-    alert("Fill all fields");
-
-    return;
+  if (!room || !name || !specialty || !prefix) {
+    alert("Please fill in all fields.");
+    return false;
   }
 
-  await setDoc(
-    doc(db, "doctors", prefix),
-    {
-      name,
-      specialty,
-      room,
-      queue: [],
-      current: "---",
-      currentPatientName: "",
-      recall: {
-        active: false,
-        attempts: 0,
-        sessionId: null,
-        status: "",
-        target: ""
-      },
-      missed: []
-    }
-  );
+  await setDoc(doc(db, "doctors", prefix), {
+    name,
+    specialty,
+    room,
+    queue:              [],
+    current:            "---",
+    currentPatientName: "",
+    counter:            0,
+    recall: {
+      active:    false,
+      attempts:  0,
+      sessionId: null,
+      status:    "",
+      target:    ""
+    },
+    missed: []
+  });
 
-  document.getElementById("name").value = "";
-  document.getElementById("specialty").value = "";
-  document.getElementById("room").value = "";
-  document.getElementById("prefix").value = "";
+  // clear inputs
+  ["docRoom", "docName", "docSpecialty", "docPrefix"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  return true;
 }
 
-export async function removeDoctor(
-  code
-) {
-
-  if (
-    !confirm(
-      "Delete this doctor?"
-    )
-  ) return;
-
-  await deleteDoc(
-    doc(db, "doctors", code)
-  );
+export async function removeDoctor(code) {
+  if (!confirm(`Delete Dr. ${code}? This cannot be undone.`)) return;
+  await deleteDoc(doc(db, "doctors", code));
 }

@@ -1,57 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Doctor Panel</title>
+  <title>Clerk Panel — Twin Care Hospital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
 
   <!-- HEADER -->
-  <div class="header">
+  <header class="header">
     <img src="./assets/TWIN CARE HOSPITAL.png" alt="Twin Care Hospital Logo" class="logo">
-    <h1 class="header-title">Twin Care Hospital Incorporated</h1>
-  </div>
+    <div class="header-text">
+      <div class="header-title">Twin Care Hospital Incorporated</div>
+      <div class="header-sub">Clerk Station · Queue Management</div>
+    </div>
+    <div class="header-actions">
+      <div class="last-ticket-chip">
+        <span class="last-ticket-label">LAST TICKET</span>
+        <span class="last-ticket-value" id="lastTicket">—</span>
+      </div>
+      <button class="add-btn" id="openAddDoctorBtn">＋ Add Doctor</button>
+    </div>
+  </header>
 
-  <!-- FIX #9: wrapped in .top-actions so CSS padding applies correctly -->
-  <div class="top-actions">
-    <button id="openModalBtn" class="add-btn">➕ Add Doctor</button>
-  </div>
+  <!-- DOCTOR CARDS -->
+  <main class="container">
+    <div class="cards" id="doctorContainer"></div>
+  </main>
 
-  <div class="container" id="doctorContainer"></div>
-
-  <!-- ADD DOCTOR MODAL -->
-  <div id="doctorModal" class="modal">
+  <!-- ═══ MODAL: ADD DOCTOR ══════════════════════════════ -->
+  <div class="modal" id="addDoctorModal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>➕ Add New Doctor</h2>
-      <input id="room" placeholder="Room Number">
-      <input id="name" placeholder="Doctor Name">
-      <input id="specialty" placeholder="Specialty">
-      <input id="prefix" placeholder="Prefix (A, B, C...)">
-      <button id="saveDoctorBtn">Add Doctor</button>
+      <button class="modal-close" data-close="addDoctorModal">&#x2715;</button>
+      <div class="modal-icon">🩺</div>
+      <h2 class="modal-title">Add Doctor</h2>
+      <p class="modal-sub">Fill in the doctor's details to register them.</p>
+      <input id="docRoom"      class="modal-input" placeholder="Room Number">
+      <input id="docName"      class="modal-input" placeholder="Doctor Name">
+      <input id="docSpecialty" class="modal-input" placeholder="Specialty">
+      <input id="docPrefix"    class="modal-input" placeholder="Ticket Prefix (A, B, C…)">
+      <button class="modal-btn" id="saveDocBtn">Add Doctor</button>
     </div>
   </div>
 
-  <!-- QUEUE MODAL -->
-  <div id="queueModal" class="modal">
+  <!-- ═══ MODAL: GENERATE TICKET ════════════════════════ -->
+  <div class="modal" id="ticketModal">
     <div class="modal-content">
-      <span class="closeQueue">&times;</span>
-      <h2 id="queueTitle">Queue</h2>
-      <div id="queueList"></div>
+      <button class="modal-close" data-close="ticketModal">&#x2715;</button>
+      <div class="modal-icon">🎫</div>
+      <h2 class="modal-title">Generate Ticket</h2>
+      <p class="modal-sub" id="ticketModalSub">Enter the patient's full name.</p>
+      <input
+        type="text"
+        id="patientName"
+        class="modal-input"
+        placeholder="Patient Full Name"
+        autocomplete="off"
+      >
+      <button class="modal-btn" id="confirmTicketBtn">Print &amp; Issue Ticket</button>
     </div>
   </div>
 
-  <!-- RESTORE MODAL -->
-  <div id="restoreModal" class="modal">
-    <div class="modal-content">
-      <span class="closeRestore">&times;</span>
-      <h2>♻️ Restore Missed Patient</h2>
-      <div id="restoreList"></div>
+  <!-- ═══ MODAL: VIEW QUEUE ══════════════════════════════ -->
+  <div class="modal" id="queueModal">
+    <div class="modal-content modal-content--list">
+      <button class="modal-close" data-close="queueModal">&#x2715;</button>
+      <div class="modal-icon">📋</div>
+      <h2 class="modal-title" id="queueModalTitle">Queue</h2>
+      <div class="modal-list" id="queueList"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: RESTORE MISSED ══════════════════════════ -->
+  <div class="modal" id="restoreModal">
+    <div class="modal-content modal-content--list">
+      <button class="modal-close" data-close="restoreModal">&#x2715;</button>
+      <div class="modal-icon">♻️</div>
+      <h2 class="modal-title">Restore Missed Patient</h2>
+      <div class="modal-list" id="restoreList"></div>
     </div>
   </div>
 
   <script type="module" src="./js/index.js"></script>
-
 </body>
 </html>
