@@ -1,61 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Guard Panel</title>
-    <link rel="stylesheet" href="index.css">
+  <title>Guard Panel — Twin Care Hospital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
+
   <!-- HEADER -->
-  <div class="header">
+  <header class="header">
     <img src="./assets/TWIN CARE HOSPITAL.png" alt="Twin Care Hospital Logo" class="logo">
-    <h1>Twin Care Hospital Incorporated</h1>
-  </div>
-
-  <!-- MAIN -->
-  <div class="container">
-          <!-- TICKET DISPLAY -->
-    <div class="ticket-box">
-      <div class="label">LAST GENERATED TICKET</div>
-      <div id="ticket">---</div>
+    <div class="header-text">
+      <div class="header-title">Twin Care Hospital Incorporated</div>
+      <div class="header-sub">Guard Station · Ticket Issuance</div>
     </div>
+  </header>
 
-  <div class="cards" id="doctorCards"></div>
+  <!-- LAST TICKET BANNER -->
+  <div class="last-ticket-bar">
+    <span class="last-ticket-label">LAST ISSUED</span>
+    <span class="last-ticket-value" id="lastTicket">—</span>
   </div>
+
+  <!-- DOCTOR CARDS -->
+  <main class="container">
+    <div class="cards" id="doctorCards"></div>
+  </main>
 
   <!-- PATIENT MODAL -->
-<!-- PATIENT MODAL -->
-<div class="modal" id="patientModal">
+  <div class="modal" id="patientModal">
+    <div class="modal-content">
 
-  <div class="modal-content">
+      <button class="modal-close" id="closeModal" aria-label="Close">&#x2715;</button>
 
-    <span class="close" id="closeModal">&times;</span>
+      <div class="modal-icon">🎫</div>
 
-    <div class="modal-icon">
-      🎫
+      <h2 class="modal-title">Generate Ticket</h2>
+      <p class="modal-sub" id="modalSub">Enter the patient's full name.</p>
+
+      <input
+        type="text"
+        id="patientName"
+        class="modal-input"
+        placeholder="Patient Full Name"
+        autocomplete="off"
+      >
+
+      <button class="modal-btn" id="confirmTicketBtn">
+        Print & Issue Ticket
+      </button>
+
     </div>
-
-    <h2>Generate Queue Ticket</h2>
-
-    <div class="modal-sub">
-      Enter patient name before printing the queue ticket.
-    </div>
-
-    <input
-      type="text"
-      id="patientName"
-      placeholder="Patient Full Name"
-    >
-
-    <button id="confirmTicketBtn">
-      Generate & Print Ticket
-    </button>
-
   </div>
 
-</div>
-
   <script type="module" src="./js/index.js"></script>
-
 </body>
 </html>

@@ -1,32 +1,32 @@
-const modal =
-  document.getElementById("patientModal");
+// Single modal system using CSS .open class (consistent with index.css)
+// FIX #11: removed dual modal system — modal.js is the only modal handler
 
-const patientInput =
-  document.getElementById("patientName");
+const modalEl    = document.getElementById("patientModal");
+const inputEl    = document.getElementById("patientName");
+const subEl      = document.getElementById("modalSub");
 
-let selectedDoctor = "";
+let _code = "";
 
-export function openPatientModal(code) {
-
-  selectedDoctor = code;
-
-  modal.style.display = "flex";
-
-  patientInput.value = "";
-
-  patientInput.focus();
+export function setModalDoctor(code, name, specialty, room) {
+  _code = code;
+  subEl.textContent =
+    `Dr. ${name} · ${specialty} · Room ${room}`;
 }
 
-export function closePatientModal() {
-
-  modal.style.display = "none";
+export function openModal() {
+  inputEl.value = "";
+  modalEl.classList.add("open");
+  // delay focus so the transition doesn't jank
+  setTimeout(() => inputEl.focus(), 80);
 }
 
-export function getSelectedDoctor() {
-  return selectedDoctor;
+export function closeModal() {
+  modalEl.classList.remove("open");
 }
 
-export function getPatientName() {
-
-  return patientInput.value.trim();
+export function getModalValues() {
+  return {
+    patientName: inputEl.value.trim(),
+    code: _code
+  };
 }

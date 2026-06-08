@@ -5,48 +5,36 @@ import {
 
 import { db } from "./firebase.js";
 
-export async function createTicket(
-  code,
-  patientName
-) {
+export async function createTicket(code, patientName) {
 
   const ref = doc(db, "doctors", code);
 
-  let ticket = "";
-  let room = "---";
+  let ticket     = "";
+  let room       = "---";
+  let doctorName = "";
 
   await runTransaction(db, async (transaction) => {
 
-    const snap =
-      await transaction.get(ref);
+    const snap = await transaction.get(ref);
 
-    if (!snap.exists()) return;
+    // FIX #6: throw instead of silently returning empty ticket
+    if (!snap.exists()) {
+      throw new Error(`Doctor "${code}" not found in Firestore.`);
+    }
 
     const data = snap.data();
 
-    room = data.room || "---";
+    room       = data.room  || "---";
+    doctorName = data.name  || code;
 
-    const counter =
-      (data.counter || 0) + 1;
+    const counter = (data.counter || 0) + 1;
 
-    ticket =
-      `${code}-${String(counter).padStart(3, "0")}`;
+    ticket = `${code}-${String(counter).padStart(3, "0")}`;
 
-    const queue = data.queue || [];
+    const queue = [...(data.queue || []), { ticket, patientName }];
 
-    queue.push({
-      ticket,
-      patientName
-    });
-
-    transaction.update(ref, {
-      counter,
-      queue
-    });
+    transaction.update(ref, { counter, queue });
   });
 
-  return {
-    ticket,
-    room
-  };
+  return { ticket, room, doctorName };
 }

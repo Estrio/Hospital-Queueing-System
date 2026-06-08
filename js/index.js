@@ -4,98 +4,91 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import { db } from "./firebase.js";
-
-import {
-  renderDoctors,
-  updateLastTicket
-} from "./ui.js";
-
-import {
-  openPatientModal,
-  closePatientModal,
-  getPatientName,
-  getSelectedDoctor
-} from "./modal.js";
-
+import { renderDoctors, flashLastTicket } from "./ui.js";
+import { openModal, closeModal, setModalDoctor, getModalValues } from "./modal.js";
 import { createTicket } from "./ticket.js";
-
 import { printTicket } from "./printer.js";
 
-// =========================
-// LOAD DOCTORS
-// =========================
+// ── LIVE DOCTOR LIST ───────────────────────────────────
 onSnapshot(
   collection(db, "doctors"),
   (snapshot) => {
-
     const doctors = snapshot.docs.map(docSnap => {
-
       const data = docSnap.data();
-
       return {
-        code: docSnap.id,
-        name: data.name || docSnap.id,
-        specialty: data.specialty || "Doctor"
+        code:      docSnap.id,
+        name:      data.name      || docSnap.id,
+        specialty: data.specialty || "",
+        room:      data.room      || "---"
       };
     });
 
-    renderDoctors(
-      doctors,
-      openPatientModal
-    );
+    renderDoctors(doctors, (code, name, specialty, room) => {
+      setModalDoctor(code, name, specialty, room);
+      openModal();
+    });
   }
 );
 
-// =========================
-// MODAL EVENTS
-// =========================
-document
-  .getElementById("closeModal")
-  .onclick = closePatientModal;
+// ── MODAL CLOSE ────────────────────────────────────────
+document.getElementById("closeModal").onclick = closeModal;
 
-window.onclick = (e) => {
+// close on backdrop click
+document.getElementById("patientModal").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
 
-  const modal =
-    document.getElementById("patientModal");
+// close on Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+});
 
-  if (e.target === modal) {
-    closePatientModal();
+// ── CONFIRM / PRINT TICKET ─────────────────────────────
+document.getElementById("confirmTicketBtn").onclick = async () => {
+
+  const { patientName, code } = getModalValues();
+
+  if (!patientName) {
+    document.getElementById("patientName").focus();
+    return;
   }
-};
 
-// =========================
-// CONFIRM TICKET
-// =========================
-document
-  .getElementById("confirmTicketBtn")
-  .onclick = async () => {
+  const btn = document.getElementById("confirmTicketBtn");
+  btn.disabled = true;
+  btn.textContent = "Generating…";
 
-    const patientName =
-      getPatientName();
+  try {
 
-    if (!patientName) {
+    const result = await createTicket(code, patientName);
 
-      alert("Please enter patient name");
-
+    if (!result.ticket) {
+      alert("Could not generate ticket. Doctor not found.");
       return;
     }
 
-    const code =
-      getSelectedDoctor();
-
-    const result =
-      await createTicket(
-        code,
-        patientName
-      );
-
-    updateLastTicket(result.ticket);
+    flashLastTicket(result.ticket);
 
     printTicket({
-      ticket: result.ticket,
+      ticket:      result.ticket,
       patientName,
-      room: result.room
+      room:        result.room,
+      doctorName:  result.doctorName
     });
 
-    closePatientModal();
+    closeModal();
+
+  } catch (err) {
+    console.error("Ticket error:", err);
+    alert("Something went wrong. Please try again.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Print & Issue Ticket";
+  }
 };
+
+// allow Enter key to confirm
+document.getElementById("patientName").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    document.getElementById("confirmTicketBtn").click();
+  }
+});
