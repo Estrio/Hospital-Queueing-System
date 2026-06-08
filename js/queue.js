@@ -27,25 +27,27 @@ export async function nextPatient(
   const queue =
     data.queue || [];
 
-  const nextPatient =
+  // FIX #4: renamed from nextPatient to avoid shadowing the exported function
+  const firstInQueue =
     queue[0] || null;
 
   await updateDoc(ref, {
 
     current:
-      nextPatient
-        ? nextPatient.ticket
+      firstInQueue
+        ? firstInQueue.ticket
         : "---",
 
     currentPatientName:
-      nextPatient
-        ? nextPatient.patientName
+      firstInQueue
+        ? firstInQueue.patientName
         : "",
 
     queue:
       queue.slice(1)
   });
+
   await new Promise(
     r => setTimeout(r, 500)
-    );
+  );
 }

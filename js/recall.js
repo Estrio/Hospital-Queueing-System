@@ -36,14 +36,14 @@ export async function recallPatient(
     return;
   }
 
-  // already recalling
+  // already recalling on this tab
   if (timers[code])
     return;
 
-    let attempts =
-    data.recall?.attempts || 0;
+  // FIX #6: always reset attempts to 0 on a fresh recall session
+  let attempts = 0;
 
-    const sessionId =
+  const sessionId =
     Date.now();
 
   async function cycle() {
@@ -63,9 +63,9 @@ export async function recallPatient(
         status: "calling",
 
         target:
-        (
+          (
             await getDoc(ref)
-        ).data().current
+          ).data().current
       }
     });
 
@@ -76,7 +76,7 @@ export async function recallPatient(
           (await getDoc(ref))
             .data();
 
-        // patient arrived
+        // patient arrived — another tab/device cleared the recall
         if (
           latest.recall?.active === false
         ) {
@@ -90,7 +90,7 @@ export async function recallPatient(
           return;
         }
 
-        // missed after 3 attempts
+        // missed after 3 attempts — advance queue
         if (attempts >= 3) {
 
           const missed =
@@ -108,25 +108,25 @@ export async function recallPatient(
           const queue =
             latest.queue || [];
 
-            const nextPatient =
+          const firstInQueue =
             queue[0] || null;
 
-            await updateDoc(ref, {
+          await updateDoc(ref, {
 
             missed,
 
             current:
-                nextPatient
-                ? nextPatient.ticket
+              firstInQueue
+                ? firstInQueue.ticket
                 : "---",
 
             currentPatientName:
-                nextPatient
-                ? nextPatient.patientName
+              firstInQueue
+                ? firstInQueue.patientName
                 : "",
 
             queue:
-                queue.slice(1),
+              queue.slice(1),
 
             recall: {
 
@@ -167,6 +167,13 @@ export async function patientArrived(
   const ref =
     doc(db, "doctors", code);
 
+  // FIX #7: include sessionId to keep the recall object shape consistent
+  const snap = await getDoc(ref);
+  const sessionId =
+    snap.exists()
+      ? snap.data().recall?.sessionId ?? null
+      : null;
+
   await updateDoc(ref, {
 
     recall: {
@@ -174,6 +181,8 @@ export async function patientArrived(
       active: false,
 
       attempts: 0,
+
+      sessionId,
 
       status: "arrived",
 

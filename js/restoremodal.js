@@ -45,7 +45,6 @@ export async function openRestoreModal(
   if (!missed.length) {
 
     restoreList.innerHTML = `
-
       <div class="empty-state">
         No missed patients
       </div>
@@ -92,12 +91,11 @@ export async function openRestoreModal(
           async () => {
 
             await restorePatient(
-
               code,
-
               btn.dataset.ticket
             );
 
+            // re-fetch and re-render after restore
             await openRestoreModal(
               code
             );
@@ -110,13 +108,6 @@ export async function openRestoreModal(
   );
 }
 
-document
-  .querySelector(
-    ".closeRestore"
-  )
-  .onclick = () => {
-
-    closeModal(
-      "restoreModal"
-    );
-};
+// FIX #2: close handler removed from here — it's now in index.js
+// alongside all other modal close handlers, preventing side-effect
+// execution at import time.

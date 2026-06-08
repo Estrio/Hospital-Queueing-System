@@ -41,39 +41,28 @@ export async function addDoctor() {
 
   await setDoc(
     doc(db, "doctors", prefix),
-
-        {
-        name,
-        specialty,
-        room,
-
-        queue: [],
-
-        current: "---",
-
-        currentPatientName: "",
-
-        recall: {
-
-            active: false,
-
-            attempts: 0,
-
-            sessionId: null,
-
-            status: "",
-
-            target: ""
-        },
-
-        missed: []
-        }
+    {
+      name,
+      specialty,
+      room,
+      queue: [],
+      current: "---",
+      currentPatientName: "",
+      recall: {
+        active: false,
+        attempts: 0,
+        sessionId: null,
+        status: "",
+        target: ""
+      },
+      missed: []
+    }
   );
 
-document.getElementById("name").value = "";
-document.getElementById("specialty").value = "";
-document.getElementById("room").value = "";
-document.getElementById("prefix").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("specialty").value = "";
+  document.getElementById("room").value = "";
+  document.getElementById("prefix").value = "";
 }
 
 export async function removeDoctor(
