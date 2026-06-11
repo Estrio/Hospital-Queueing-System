@@ -1,17 +1,25 @@
 {
-  "name": "display",
+  "name": "display_panel",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
+
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "electron-builder"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "electron": "^42.0.0"
+
+  "build": {
+    "appId": "com.twincare.displaypanel",
+
+    "productName": "TwinCare Display Panel",
+
+    "directories": {
+      "output": "Queueing System Installer Display Panel"
+    },
+
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico"
+    }
   }
 }
